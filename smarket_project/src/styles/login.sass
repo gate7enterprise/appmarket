@@ -1,0 +1,57 @@
+@import './mixins'
+  
+.super-container
+  display: flex
+  width: 85vw
+  height: 100vh
+  flex-flow: row-reverse
+
+.right-field
+  width: 40vw 
+  display: grid
+  place-content: center
+  & img
+    margin: 0 auto
+    width: 80%
+
+.login-form
+  width: 60%
+  @include flexCenter
+  flex-direction: column
+  gap: 0.5rem
+
+.login-form-group
+  position: relative
+  @include flexCenter
+  flex-direction: column
+  
+  width: 80%
+  margin: 0 auto
+  & .admin
+    margin: 1rem
+  & .form-error
+    position: absolute
+    left: 20%
+    top: -180px
+    background: #5d5d5da6
+    padding: .5rem
+    border-radius: 5px
+  
+
+.form-field
+  width: 90%
+  padding: 0.5rem
+
+.btn
+  width: 90%
+
+@media (max-width: 800px)
+  .right-field
+    width: 100vw
+    position: absolute
+    & img
+      display: none
+  .login-form
+    width: 100vw
+    margin: .5rem
+  

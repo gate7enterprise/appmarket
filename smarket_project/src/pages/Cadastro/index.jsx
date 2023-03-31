@@ -15,6 +15,12 @@ function Cadastro() {
 			password: values.password,
 			admin: values.admin,
 		}).then((response) => {
+			if (isAdmin.checked) {
+				setIsAdmin(true);
+			} else if (!isAdmin.checked) {
+				setIsAdmin(false);
+				console.log('Teste not admin:', isAdmin);
+			}
 			if (response.data.msg == 'Usuário já cadastrado') {
 				alert(response.data.msg);
 			} else if (response.data.msg == 'Cadastrado com sucesso') {
@@ -24,11 +30,6 @@ function Cadastro() {
 					el.value = ''
 				})
 			}
-				if (isAdmin.checked) {
-					setIsAdmin(true);
-				} else if (!isAdmin.checked) {
-					setIsAdmin(false);
-				}
 		});
 	}
   const validationOnRegister = yup.object().shape({

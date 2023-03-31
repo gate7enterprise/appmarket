@@ -2,9 +2,10 @@
   
 .super-container
   display: flex
+  justify-content: center
   width: 85vw
-  height: 100vh
-  flex-flow: row-reverse
+  min-height: 100vh
+  // flex-flow: row-reverse
 
 .right-field
   width: 40vw 
@@ -14,17 +15,25 @@
     margin: 0 auto
     width: 80%
 
-.login-form
+.login-form, .profile-form
   width: 60%
   @include flexCenter
   flex-direction: column
   gap: 0.5rem
 
-.login-form-group
+
+.checkbox-form-group
+  position: relative
+  @include flexCenter
+  flex-direction: row
+  width: 40%
+  gap: 1rem
+  margin: 0 auto
+
+.login-form-group, .profile-form-group
   position: relative
   @include flexCenter
   flex-direction: column
-  
   width: 80%
   margin: 0 auto
   & .admin
@@ -37,6 +46,17 @@
     padding: .5rem
     border-radius: 5px
   
+.profile-form-group
+  width: 100%
+  & .end-firstline, .end-others
+    gap: 0.5rem
+    @include flexCenter
+    width: 93%
+    margin: .5rem
+    & .log
+      width: 350ch
+      gap: .5rem
+
 
 .form-field
   width: 90%

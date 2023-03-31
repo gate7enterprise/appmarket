@@ -26,7 +26,8 @@ function Login() {
 			}
     })
   }
-  const validationOnLogin = yup.object().shape({
+
+	const validationOnLogin = yup.object().shape({
 		email: yup
 			.string()
 			.email('Digite um email válido')
@@ -49,7 +50,12 @@ function Login() {
 			>
 				<Form className='login-form'>
 					<div className='login-form-group'>
-						<Field name='email' className='form-field' placeholder='Email' />
+						<Field
+							name='email'
+							className='form-field'
+							placeholder='Email'
+							autoComplete='username'
+						/>
 						<ErrorMessage
 							component='span'
 							name='email'
@@ -63,6 +69,7 @@ function Login() {
 							className='form-field'
 							placeholder='Senha'
 							type='password'
+							autoComplete='current-password'
 						/>
 						<ErrorMessage
 							component='span'
@@ -78,7 +85,7 @@ function Login() {
 				</Form>
 			</Formik>
 		</div>
-	)
+	);
 }
 
 export default Login

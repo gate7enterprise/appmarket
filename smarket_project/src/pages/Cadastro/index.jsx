@@ -10,17 +10,18 @@ function Cadastro() {
 	const [isAdmin, setIsAdmin] = useState(false)
 
   const handleClickRegister = (values) => {
+		if (values.admin) {
+			setIsAdmin(true);
+		} else if (!values.admin) {
+			setIsAdmin(false);
+		}
+		console.log('Teste not admin:', isAdmin);
+
 		Axios.post('http://localhost:3001/register', {
 			email: values.email,
 			password: values.password,
 			admin: values.admin,
 		}).then((response) => {
-			if (isAdmin.checked) {
-				setIsAdmin(true);
-			} else if (!isAdmin.checked) {
-				setIsAdmin(false);
-				console.log('Teste not admin:', isAdmin);
-			}
 			if (response.data.msg == 'Usuário já cadastrado') {
 				alert(response.data.msg);
 			} else if (response.data.msg == 'Cadastrado com sucesso') {
@@ -55,7 +56,9 @@ function Cadastro() {
 		<div className='cad-container'>
 			<h2>Cadastro de novo usuário</h2>
 			<Formik
-				initialValues={{}}
+				initialValues={{
+					admin: false,
+				}}
 				onSubmit={handleClickRegister}
 				validationSchema={validationOnRegister}
 			>
@@ -108,13 +111,9 @@ function Cadastro() {
 						/>
 					</div>
 					<div className='login-form-group'>
-						<div className="check">
-							<label htmlFor="admin">Admin</label>
-							<Field 
-								className="admin" 
-								name="admin" 
-								type="checkbox"
-							/>
+						<div className='check'>
+							<label>Admin</label>
+							<Field className='admin' name='admin' type='checkbox' />
 						</div>
 						<button className='btn' type='submit'>
 							Cadastrar

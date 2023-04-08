@@ -12,7 +12,7 @@ const db = mysql.createPool({
 	database: 'registro',
 });
 
-const idusuario = ''
+let idusuario = ''
 
 app.use(express.json())
 app.use(cors())
@@ -27,26 +27,29 @@ app.post('/login', (req, res) => {
 		[email],
 		(err, result) => {
       if (err) {
-				res.send(err);
+				return res.send(err);
 			}
       if(result.length != 0) {
-        const idusuario = result[0].idusuarios
+        idusuario = result[0].idusuarios
+        const admin = result[0].admin;
+
         console.log('RESULT USUÁRIO:', result[0].idusuarios);
         bcrypt.compare(password, result[0].password, 
           (error, result) => {
           if(result) {
             resposta.msg = true
-            resposta.idusuario = idusuario;
+            resposta.idusuario = idusuario
+            resposta.admin = admin
           }
           else {
             resposta.msg = 'senha incorreta';
           } 
-          res.send(resposta)
+          return res.send(resposta)
         })
       }
       else {
         resposta.msg = 'Usuário não cadastrado';
-        res.send(resposta)
+        return res.send(resposta)
       }
       
 		}
@@ -59,52 +62,77 @@ app.post('/profile', (req, res) => {
   const sexo = req.body.sexo
   const endereco = req.body.endereco
 
-	db.query(`UPDATE profiles SET nome=?, nascimento=?, sexo=?, endereco=? WHERE (idusuario=?);`, [nome, nascimento, sexo, endereco, idusuario], (err, result) => {
+	db.query(`UPDATE profiles SET nome=?, nascimento=?, sexo=?, endereco=? WHERE idusuario=?;`, [nome, nascimento, sexo, endereco, idusuario], (err, result) => {
 		if (err) {
-			res.send(err);
+			return res.send(err.code);
 		}
 		else {
-			res.send({ msg: 'Profile foi Salvo' });
-      console.log(result)
+			return res.send({ msg: 'Profile foi Salvo' });
 		}
 	});
 });
+
+app.get(`/profile`, (req, res) => {
+  db.query('SELECT * FROM profiles WHERE idusuario = ?', [idusuario], 
+  (err, result) => {
+    if(err) {
+      return res.send(err)
+    }
+    console.log("GET RESULT::", result)
+    res.send(result)
+  })
+})
 
 app.post("/register", (req, res) => {
   const admin = req.body.admin 
   const email = req.body.email
   const password = req.body.password
 
-  console.log("Admin recebido:", admin)
-
+  
   db.query("SELECT * FROM usuarios WHERE email = ?", [email],
   (err, result) => {
+
+    message = new Object
+
     if(err) {
-      res.send(err)
+      return res.send(err.code)
     }
     if(result.length == 0) {
       bcrypt.hash(password, saltRounds, (err, hash) => {
-        console.log("HASH:", hash)
         db.query("INSERT INTO usuarios (email, password, admin) VALUES (?, ?, ?)", [email, hash, admin], 
         (err, response) => {
           if(err) {
-            res.send(err)
+            return res.send("erro ao inserir no banco")
           }
-          res.send({msg: "Cadastrado com sucesso"})
+          message.msg = "Cadastrado com sucesso"
         })
-        db.query(`INSERT INTO profiles VALUES(default, null, ?, null, null, null);`, [idusuario],
-        (err, resp) => {
-          if(err) {
-            resp.send(err)
-          } else {
-            resp.send({msg: "Realizada adição de clean Profile"})
-          }
-        }
+        db.query('SELECT * from usuarios WHERE email=?', [email],
+					(err, resp) => {
+						if (err) {
+							return res.send("erro");
+						} 
+            else {
+              const novoIdusuario = resp[0].idusuarios
+              db.query(
+								`INSERT INTO profiles VALUES(default, null, ?, null, null, null);`, [novoIdusuario],
+								(err, res) => {
+									if (err) {
+										return res.send('erro');
+									} else {
+										message.msg = 'Realizada adição de clean Profile';
+										return res.send(message);
+									}
+								}
+							);
+						}
+					}
 				);
       })
     } else {
-      res.send({msg: "Usuário já cadastrado"})
+      message.msg =  "Usuário já cadastrado"
+      return res.send(message)
     }
+
   });
 })
 

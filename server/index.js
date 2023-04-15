@@ -105,6 +105,7 @@ app.post("/register", (req, res) => {
             return res.send("erro ao inserir no banco")
           }
           message.msg = "Cadastrado com sucesso"
+          alert(message.msg)
         })
         db.query('SELECT * from usuarios WHERE email=?', [email],
 					(err, resp) => {

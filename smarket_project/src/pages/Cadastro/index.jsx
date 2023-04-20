@@ -64,7 +64,11 @@ function Cadastro() {
 			>
 				<Form className='login-form'>
 					<div className='login-form-group'>
-						<Field name='email' className='form-field' placeholder='Email' />
+						<Field 
+							name='email' 
+							className='form-field' 
+							placeholder='Email' 
+						/>
 						<ErrorMessage
 							component='span'
 							name='email'
